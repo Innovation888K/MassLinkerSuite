@@ -111,7 +111,7 @@ if __name__ == "__main__":
     )
     logger = logging.getLogger(__name__)
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-    dataset = joblib.load(r"F:\质谱不鉴定数据\源数据\merged_dataset_enhanced_total.joblib")
+    dataset = joblib.load(r"merged_dataset_enhanced_total.joblib")
     model = transformer_language(class_count=len(set(dataset.classes)), embed_dim=512, n_heads=8,
                                  depth=8).to(device)
     x = dataset.samples
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     )
     x_test = x[[i for i in test_idx]]
     y_test = torch.tensor(y[[i for i in test_idx]], dtype=torch.long)
-    enhanced_dataset = joblib.load(r"F:\质谱不鉴定数据\源数据\merged_dataset_enhanced.joblib")
+    enhanced_dataset = joblib.load(r"merged_dataset_enhanced.joblib")
     train_enhanced_idx = []
     train_x_name = [dataset.name[i] for i in train_idx]
     for i in range(len(enhanced_dataset)):
