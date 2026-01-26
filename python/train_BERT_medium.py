@@ -65,7 +65,7 @@ SORTED_DRUG_NAMES = sorted(DRUG_LIBRARY.keys(), key=lambda x: DRUG_LIBRARY[x])
 STANDARD_TREATMENTS = {
     "Descending colon cancer": ["5-Fluorouracil", "Oxaliplatin", "Capecitabine", "Irinotecan", "Bevacizumab"],
     "Ascending colon cancer":  ["5-Fluorouracil", "Oxaliplatin", "Capecitabine", "Irinotecan", "Bevacizumab"],
-    "RCC":                     ["Sunitinib", "Sorafenib", "Bevacizumab", "Pembrolizumab"], # 肾癌主要是靶向和免疫
+    "RCC":                     ["Sunitinib", "Sorafenib", "Bevacizumab", "Pembrolizumab"],
     "Cervical cancer":         ["Cisplatin", "Paclitaxel", "Bevacizumab", "Ifosfamide"],
     "Ovarian Cancer":          ["Paclitaxel", "Carboplatin", "Cisplatin", "Doxorubicin", "Olaparib", "Bevacizumab"],
     "endometrial cancer":      ["Carboplatin", "Paclitaxel", "Doxorubicin", "Cisplatin", "Megestrol"],
@@ -265,7 +265,7 @@ class MassLinkerBioLLM(nn.Module):
         attention_mask = torch.ones((batch_size, soft_prompt_len), device=metabolite_tensor.device)
         generated_ids = self.llm.generate(
             inputs_embeds=soft_prompts,
-            attention_mask=attention_mask,  # 传入 mask 消除警告
+            attention_mask=attention_mask,
             **generate_kwargs
         )
         return generated_ids
@@ -505,9 +505,9 @@ class BioLLMValidator:
                 generated_ids = self.model.generate(
                     metabolic_input,
                     self.tokenizer,
-                    max_new_tokens=128,  # 限制生成长度
-                    temperature=0.3,  # 降温
-                    repetition_penalty=1.2  # 惩罚重复
+                    max_new_tokens=128,
+                    temperature=0.3,
+                    repetition_penalty=1.2
                 )
                 generated_texts = [self.tokenizer.decode(ids, skip_special_tokens=True) for ids in generated_ids]
 

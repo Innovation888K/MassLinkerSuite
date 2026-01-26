@@ -227,7 +227,6 @@ def plot_enrichment(plot_df, topn_p=3, topn_pps=3, save_dir=None, save_name="KEG
                     low_p_color='#D15D73', high_p_color='#B3B3B3'):
     plot_df = plot_df.copy()
     plot_df.dropna(subset=['P_Value'], inplace=True)
-    # 使用一个极小值替代0，防止 log10 出错
     plot_df['neg_log10_p'] = -np.log10(plot_df['P_Value'].replace(0, np.nextafter(0, 1)))
     fig = plt.figure(figsize=(13, 11))
     ax = fig.add_subplot(111, projection='3d')
@@ -258,7 +257,7 @@ def plot_enrichment(plot_df, topn_p=3, topn_pps=3, save_dir=None, save_name="KEG
         top_pathways_p = plot_df.nsmallest(num_to_plot_p, 'P_Value')
         for _, row in top_pathways_p.iterrows():
             ax.text(row['Enrichment_Ratio'], row['PPS'], row['neg_log10_p'],
-                    f"  {row['Pathway_Name']}",  # 加点空格防止贴太近
+                    f"  {row['Pathway_Name']}",
                     color=annotation_color, fontsize=9, ha='left', va='center')
     if len(plot_df) > 0:
         num_to_plot_pps = min(len(plot_df), topn_pps)
@@ -280,7 +279,7 @@ def plot_enrichment(plot_df, topn_p=3, topn_pps=3, save_dir=None, save_name="KEG
             os.makedirs(save_dir)
         save_path = os.path.join(save_dir, save_name)
 
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')  # 增加 dpi 和 bbox_inches 提高保存质量
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.close()
 
 
@@ -369,7 +368,7 @@ def plot_2d(JS, was, group, save_path="/", color_map=None):
     plt.grid(True)
 
     plt.tight_layout()
-    if not os.path.exists(save_path): os.makedirs(save_path)  # 防止路径不存在报错
+    if not os.path.exists(save_path): os.makedirs(save_path)
     plt.savefig(os.path.join(save_path, "pca.pdf"))
 
     perplexity_value = min(5, n_samples - 1)
@@ -595,7 +594,7 @@ def low_dim_plots(plot1, groups, figsize=None, random_state=42, save_path="2D_pl
     results['pca'] = X_pca
     pca_for_tsne = PCA(n_components=min(500, len(X_scaled[0])), random_state=random_state)
     X_encoded_tsne = pca_for_tsne.fit_transform(X_scaled)
-    tsne = TSNE(n_components=min(dim, 3), random_state=random_state, perplexity=50, n_iter=2000)  # n_iter 建议设大一点
+    tsne = TSNE(n_components=min(dim, 3), random_state=random_state, perplexity=50, n_iter=2000)
     X_tsne = tsne.fit_transform(X_encoded_tsne)
     results['tsne'] = X_tsne
     umap_reducer = umap.UMAP(n_components=dim, random_state=random_state, n_neighbors=15, min_dist=0.01)
