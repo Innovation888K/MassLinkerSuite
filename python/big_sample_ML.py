@@ -7,7 +7,7 @@ import copy
 import torch
 from tqdm import tqdm
 from utils import visualization_foldn_valid
-import pathway_mask
+
 def fold_n_valid(data_path, task_name, save_dir, n_part=5,fit_mode='single'):
     loaded_data, split_idx = load_data(data_path, n_part=n_part)
     for fold in tqdm(range(n_part)):
