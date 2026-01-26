@@ -27,24 +27,7 @@ plt.rcParams.update({
     'ytick.color': 'black',
     'font.sans-serif': 'Arial'
 })
-
-
 def addition_roc(paths: list, model_names: list = None, colors: list = None):
-    """
-    读取机器学习训练结果文件并返回addition_rocs变量
-    Parameters:
-    -----------
-    paths : list
-        文件路径列表，每个文件包含两列：第一列是实际标签，第二列是预测概率
-    model_names : list, optional
-        模型名称列表，如果为None则使用默认名称
-    colors : list, optional
-        颜色列表，如果为None则使用默认颜色
-    Returns:
-    --------
-    list
-        返回格式为 [(y_trues, y_scores, color, model_name), ...]
-    """
     if model_names is None:
         model_names = [f'Model_{i + 1}' for i in range(len(paths))]
     if colors is None:
@@ -63,8 +46,6 @@ def addition_roc(paths: list, model_names: list = None, colors: list = None):
             print(f"处理文件 {path} 时出错: {e}")
             continue
     return addition_rocs
-
-
 def save_model_results(models, fold, name, save_dir="./"):
     results = copy.deepcopy(models.predict_result)
     results.append(list())
@@ -74,8 +55,6 @@ def save_model_results(models, fold, name, save_dir="./"):
     if not os.path.exists(os.path.join(save_dir, name)):
         os.makedirs(os.path.join(save_dir, name))
     temp.to_excel(os.path.join(save_dir, name, "fold" + str(fold) + ".xlsx"))
-
-
 def fold_n(split_idx, n):
     test_idx = list()
     for i in range(len(split_idx)):
@@ -83,8 +62,6 @@ def fold_n(split_idx, n):
             for j in split_idx[i]:
                 test_idx.append(j)
     return split_idx[n], test_idx
-
-
 class ML_models:
     def __init__(self, x_train, y_train, x_test, y_test):
         self.class_num = None
@@ -307,15 +284,15 @@ def bar_plot(metrics_df, id):
             errwidth=2,
             palette='viridis'
         )
-        for p in ax.patches:  # 遍历每个柱子
+        for p in ax.patches:
             height = p.get_height()
             text_value = f'{height:.2f}'
             ax.text(p.get_x() + p.get_width() / 2.,
                     height,
                     text_value,
-                    ha='center',  # 水平居中
-                    va='bottom',  # 垂直对齐方式，使其位于柱子上方
-                    fontsize=9,  # 字体大小
+                    ha='center',
+                    va='bottom',
+                    fontsize=9,
                     color='black')
         plt.title(metric_name)
         plt.ylabel(f'average {metric_name}')

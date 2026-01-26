@@ -8,20 +8,16 @@ from tqdm import tqdm
 import random
 import utils
 import numpy as np
-
-
 class ExcelDataset(Dataset):
     '''
         Used for constructing the datasets
         data_path should contain all xlsx files converted from MassLinker
         target_path should be a xlsx file contain filename、label and is_positive(1 or 0)
     '''
-
     def __init__(self, data_path, target_path="target.xlsx", mode='origin'):
         self.data_path = data_path
         self.target_path = target_path
         self.samples, self.label, self.name, self.is_positive = self.load_data(data_path, target_path, mode=mode)
-
     def load_data(self,
                   data_path: str,
                   target_path: str,
@@ -155,15 +151,3 @@ def concat_dataset(data_dir, init_polarity_dir):
     init_dataset.gen_classes()
     return init_dataset
 
-
-if __name__ == "__main__":
-    dataset = ExcelDataset(r'F:\质谱不鉴定数据\8764\4', r"F:\质谱不鉴定数据\源数据\targets\8764_reduced.xlsx",mode='enhance')
-    dataset.save_dataset(r"F:\质谱不鉴定数据\源数据\合并后joblib数据\8764_reduced_enhanced.joblib")
-
-    # total_dataset = concat_dataset(r'F:\质谱不鉴定数据\源数据\数据增强后的joblib',
-    #                                r'D:\git\MassLinker\init_polarity.xlsx')
-    # joblib.dump(total_dataset, filename=r"F:\质谱不鉴定数据\源数据\merged_dataset_enhanced_total.joblib")
-    # dataset = joblib.load(r"F:\质谱不鉴定数据\源数据\merged_dataset_origin.joblib")
-    # plot1 = [i.reshape(1, i.shape[0] * i.shape[1] * i.shape[2])[0].numpy() for i in dataset.samples]
-    # group = dataset.classes
-    # utils.low_dim_plots(plot1, group, dim=2)

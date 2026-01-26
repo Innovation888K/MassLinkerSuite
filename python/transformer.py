@@ -61,14 +61,14 @@ class transformer_language(nn.Module):
         x = F.gelu(self.flattener(x))
         x = F.gelu(self.fc0(x))
         x = self.fc1(x)
-        #x = F.softmax(x, dim=1)
+        # x = F.softmax(x, dim=1)
         return x
 
 
 class WeightedFocalLoss(nn.Module):
     def __init__(self, alpha=None, gamma=2, reduction='mean'):
         super(WeightedFocalLoss, self).__init__()
-        self.alpha = alpha  # 可以是标量或张量
+        self.alpha = alpha
         self.gamma = gamma
         self.reduction = reduction
 
@@ -76,7 +76,6 @@ class WeightedFocalLoss(nn.Module):
         ce_loss = F.cross_entropy(inputs, targets, reduction='none')
         pt = torch.exp(-ce_loss)
 
-        # 应用类别权重
         if self.alpha is not None:
             if isinstance(self.alpha, (float, int)):
                 alpha_t = self.alpha
@@ -139,15 +138,11 @@ if __name__ == "__main__":
     y_enhanced = torch.tensor(y_enhanced, dtype=torch.long)
     x_train = x_enhanced[[i for i in train_enhanced_idx]]
     y_train = y_enhanced[[i for i in train_enhanced_idx]]
-    joblib.dump([train_idx, test_idx], filename="train_test_index.joblib")
-    # x_train = x[[i for i in range(10728)]]
-    # x_test = x[[i for i in range(10728, len(x))]]
-    # y_train = y[[i for i in range(10728)]]
-    # y_test = y[[i for i in range(10728, len(x))]]
+    #joblib.dump([train_idx, test_idx], filename="train_test_index.joblib")
     class_weights = get_class_weights(y_train).to(device)
     criterion = WeightedFocalLoss(alpha=class_weights, gamma=2)
     num_epochs = 200
-    batch_size = 2
+    batch_size = 16
     best_accuracy = 0
     train_dataset = TensorDataset(x_train, y_train)
     test_dataset = TensorDataset(x_test, y_test)

@@ -176,17 +176,6 @@ def plots(JS, was, group):
 
 
 def kegg_enrichment(pathway_df_full, p_values, was_diff):
-    """
-    对代谢通路进行KEGG富集分析。
-
-    Args:
-        pathway_df_full (pd.DataFrame): 包含通路和代谢物信息的完整数据框。
-                                       必须包含 'kegg_id', 'pathway_name', 'compound_names' 列。
-        p_values (list or np.array): 与 pathway_df_full 中每一行对应的p值列表。
-
-    Returns:
-        pd.DataFrame: 包含富集分析结果的数据框，按P值升序排列。
-    """
     significant_rows = pathway_df_full[np.array(p_values) < 0.05]
     significant_compounds_set = set(significant_rows['compound_names'].unique())
     universe_compounds = set(pathway_df_full['compound_names'].unique())
@@ -220,7 +209,6 @@ def kegg_enrichment(pathway_df_full, p_values, was_diff):
                 'Total_in_Pathway (K)': K,
                 'Hit_Compounds': hit_compounds_str,
                 "PPS": PPS * (-math.log10(p_val))
-                # "PPS": PPS
             })
     if not enrichment_results:
         print("警告: 没有在任何通路中找到显著代谢物。")
@@ -237,55 +225,24 @@ def kegg_enrichment(pathway_df_full, p_values, was_diff):
 
 def plot_enrichment(plot_df, topn_p=3, topn_pps=3, save_dir=None, save_name="KEGG_Enriched.pdf",
                     low_p_color='#D15D73', high_p_color='#B3B3B3'):
-    """
-    绘制 3D 富集分析散点图。
-
-    参数:
-    ...
-    low_p_color (str): P值最低（最显著）时的颜色 (例如 'red').
-    high_p_color (str): P值最高（最不显著）时的颜色 (例如 'blue').
-    """
-    # 数据预处理
-    plot_df = plot_df.copy()  # 创建副本以避免警告
+    plot_df = plot_df.copy()
     plot_df.dropna(subset=['P_Value'], inplace=True)
     # 使用一个极小值替代0，防止 log10 出错
     plot_df['neg_log10_p'] = -np.log10(plot_df['P_Value'].replace(0, np.nextafter(0, 1)))
-
     fig = plt.figure(figsize=(13, 11))
     ax = fig.add_subplot(111, projection='3d')
-
-    # --- 核心修改 1：创建自定义双色梯度 ---
-    # 创建一个从 low_p_color 到 high_p_color 的线性梯度色卡
     cmap_name = f"custom_{low_p_color}_{high_p_color}"
-    # 注意顺序：P值小对应 low_p_color，P值大对应 high_p_color
     colors = [low_p_color, high_p_color]
     custom_cmap = mcolors.LinearSegmentedColormap.from_list(cmap_name, colors)
-
-    # 需要标准化 P_Value 数据到 [0, 1] 区间，以便正确映射颜色
     norm = mcolors.Normalize(vmin=plot_df['P_Value'].min(), vmax=plot_df['P_Value'].max())
-    # ------------------------------------
-
     x_axis = plot_df['Enrichment_Ratio']
     y_axis = plot_df['PPS']
     z_axis = plot_df['neg_log10_p']
-
-    # 绘图，使用自定义的 cmap 和 norm
     scatter = ax.scatter(x_axis, y_axis, z_axis, c=plot_df['P_Value'], cmap=custom_cmap, norm=norm,
                          s=60, alpha=0.8, edgecolors='k', linewidth=0.5)
-
-    # --- 核心修改 2：去除灰色背景 ---
-    # 将 XYZ 三个平面的背景色设置为白色 (RGBA: 1,1,1,1)
     ax.xaxis.pane.set_facecolor((1.0, 1.0, 1.0, 1.0))
     ax.yaxis.pane.set_facecolor((1.0, 1.0, 1.0, 1.0))
     ax.zaxis.pane.set_facecolor((1.0, 1.0, 1.0, 1.0))
-    # 可选：去除平面边缘线，让它看起来更干净
-    # ax.xaxis.pane.set_edgecolor('white')
-    # ax.yaxis.pane.set_edgecolor('white')
-    # ax.zaxis.pane.set_edgecolor('white')
-    # 可选：去除网格线 (如果你想完全干净的话，去掉注释)
-    # ax.grid(False)
-    # ------------------------------------
-
     ax.set_xlabel('Enrichment Ratio', fontsize=12, labelpad=15)
     ax.set_ylabel('PPS', fontsize=12, labelpad=15)
     ax.set_zlabel('-log10(p_value)', fontsize=12, labelpad=15)
@@ -294,26 +251,18 @@ def plot_enrichment(plot_df, topn_p=3, topn_pps=3, save_dir=None, save_name="KEG
     ax.view_init(elev=2, azim=315)
 
     cbar = fig.colorbar(scatter, shrink=0.6, aspect=20)
-    cbar.set_label('P-value', fontsize=12)  # 修改了这里的 Label 写法
-
-    # --- 核心修改 3：将标记文字颜色改为黑色 ---
+    cbar.set_label('P-value', fontsize=12)
     annotation_color = 'black'
-    # ---------------------------------------
-
-    # 标记 Top P-Value
-    if len(plot_df) > 0:  # 确保有数据再进行 nsmallest
+    if len(plot_df) > 0:
         num_to_plot_p = min(len(plot_df), topn_p)
         top_pathways_p = plot_df.nsmallest(num_to_plot_p, 'P_Value')
         for _, row in top_pathways_p.iterrows():
             ax.text(row['Enrichment_Ratio'], row['PPS'], row['neg_log10_p'],
                     f"  {row['Pathway_Name']}",  # 加点空格防止贴太近
                     color=annotation_color, fontsize=9, ha='left', va='center')
-
-    # 标记 Top PPS (需要排除已经标记过的，避免重叠)
     if len(plot_df) > 0:
         num_to_plot_pps = min(len(plot_df), topn_pps)
         top_pathways_pps = plot_df.nlargest(num_to_plot_pps, 'PPS')
-        # 获取已经标记过的索引
         already_labeled_indices = top_pathways_p.index if 'top_pathways_p' in locals() else []
 
         for idx, row in top_pathways_pps.iterrows():
@@ -322,7 +271,7 @@ def plot_enrichment(plot_df, topn_p=3, topn_pps=3, save_dir=None, save_name="KEG
                         f"  {row['Pathway_Name']}",
                         color=annotation_color, fontsize=9, ha='left', va='center')
 
-    plt.tight_layout()  # 3D图中这句有时能改善布局，有时不行，可以尝试
+    plt.tight_layout()
 
     if save_dir is None:
         save_path = save_name
@@ -397,23 +346,20 @@ def plot_2d(JS, was, group, save_path="/", color_map=None):
     was_temp[np.isinf(was_temp)] = 1
     n_samples = 6
 
-    # --- PCA ---
     pca = PCA(n_components=2)
     JS_pca = pca.fit_transform(JS_temp)
     was_pca = pca.fit_transform(was_temp)
 
     plt.figure(figsize=(11, 5))
 
-    # JS PCA Plot
     plt.subplot(1, 2, 1)
     sns.scatterplot(x=JS_pca[:, 0], y=JS_pca[:, 1], hue=group, palette=color_map, s=100)
     plt.title('JS Divergence - PCA (2D)')
     plt.xlabel('Principal Component 1')
     plt.ylabel('Principal Component 2')
-    plt.legend(title='Group')  # 修改 Legend 标题更合适
+    plt.legend(title='Group')
     plt.grid(True)
 
-    # Was PCA Plot
     plt.subplot(1, 2, 2)
     sns.scatterplot(x=was_pca[:, 0], y=was_pca[:, 1], hue=group, palette=color_map, s=100)
     plt.title('Wasserstein Distance - PCA (2D)')
@@ -426,7 +372,6 @@ def plot_2d(JS, was, group, save_path="/", color_map=None):
     if not os.path.exists(save_path): os.makedirs(save_path)  # 防止路径不存在报错
     plt.savefig(os.path.join(save_path, "pca.pdf"))
 
-    # --- t-SNE ---
     perplexity_value = min(5, n_samples - 1)
     tsne = TSNE(n_components=2, perplexity=perplexity_value, random_state=42, init='pca', learning_rate='auto')
     JS_tsne = tsne.fit_transform(JS_temp)
@@ -434,7 +379,6 @@ def plot_2d(JS, was, group, save_path="/", color_map=None):
 
     plt.figure(figsize=(11, 5))
 
-    # JS t-SNE Plot
     plt.subplot(1, 2, 1)
     sns.scatterplot(x=JS_tsne[:, 0], y=JS_tsne[:, 1], hue=group, palette=color_map, s=100)
     plt.title('JS Divergence - t-SNE (2D)')
@@ -443,7 +387,6 @@ def plot_2d(JS, was, group, save_path="/", color_map=None):
     plt.legend(title='Group')
     plt.grid(True)
 
-    # Was t-SNE Plot
     plt.subplot(1, 2, 2)
     sns.scatterplot(x=was_tsne[:, 0], y=was_tsne[:, 1], hue=group, palette=color_map, s=100)
     plt.title('Wasserstein Distance - t-SNE (2D)')
@@ -622,21 +565,6 @@ def plot_MetTD(e_p_values, e_scores, e_names, permutation_time, save_path="MetTD
 
 
 def low_dim_plots(plot1, groups, figsize=None, random_state=42, save_path="2D_plot.pdf", dim=2, group_names=None,colors=None):
-    """
-    对高维数据进行 PCA、t-SNE 和 UMAP 降维可视化，支持多组标签对比。
-
-    Parameters:
-    -----------
-    plot1 : np.ndarray
-        特征数据。
-    groups : list of (list/array)
-        标签列表。例如: [group1_labels, group2_labels]
-        如果是单组标签，也会被自动处理。
-    figsize : tuple, optional
-        图像大小。如果不传，会根据行数自动计算。
-    group_names : list of str, optional
-        每一行对应的组名，例如 ['Method A', 'Method B']，用于显示在Y轴。
-    """
     if isinstance(plot1, list):
         X = np.array(plot1)
     else:
@@ -717,15 +645,6 @@ def low_dim_plots(plot1, groups, figsize=None, random_state=42, save_path="2D_pl
 
 def plot_p_value(p_values, met_names, mzs=None, n=10, figsize=(12, 8),
                  color_palette='viridis', add_significance_lines=True, save_path="p_value_rank.pdf"):
-    """
-    参数:
-    p_values: p值数组
-    met_names: 对应的名称数组
-    n: 显示前n个最小值
-    figsize: 图形大小
-    color_palette: 颜色方案
-    add_significance_lines: 是否添加显著性参考线
-    """
     if mzs is None:
         df = pd.DataFrame({
             'p_value': p_values,
@@ -756,7 +675,6 @@ def plot_p_value(p_values, met_names, mzs=None, n=10, figsize=(12, 8),
         plt.savefig(save_path, format='pdf')
         return df_sorted
     else:
-        # 新增的mz值绘制逻辑
         df = pd.DataFrame({
             'p_value': p_values,
             'name': met_names,

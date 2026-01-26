@@ -42,7 +42,6 @@ def calculate_node_scores(node_types, adj_matrix, fet_importance):
 
 
 def single_worker(args):
-    """单次permutation计算（优化版）"""
     seed, met_input, met_index, original_scores, node_types, adj_matrix = args
     np.random.seed(seed)
     random.seed(seed)
@@ -68,8 +67,6 @@ def get_p(g, idx, permutation_time, met_index, adj_matrix, met_input, n_core=10)
         )
         for i in range(permutation_time)
     ]
-    # for i in args_list:
-    #     single_worker(i)
     with Pool(processes=n_core) as pool:
         results = list(tqdm(
             pool.imap(single_worker, args_list),
@@ -105,25 +102,3 @@ def get_p(g, idx, permutation_time, met_index, adj_matrix, met_input, n_core=10)
 #     e_names = np.array(g.vs["name"])[e_mask]
 #     return e_p_values, e_scores, e_names
 
-
-if __name__ == "__main__":
-    network_info = pd.read_excel(r"links.xlsx")
-    met_name = pd.read_csv("pathway_compound_detail.csv")["compound_names"].tolist()
-    permutation_time = 1000
-    g = Graph.DataFrame(
-        network_info,
-        directed=True,
-        use_vids=False
-    )
-    adj_matrix = g.get_adjacency().data
-    g = add_node_type(g)
-    feature_importances = joblib.load("sample_feature_improtances.joblib")
-    input_ori = [data.data_rev_transform(np.mean(abs(i), axis=1)) for i in feature_importances]
-    met_input = [[np.mean(j) for j in i] for i in input_ori]
-    met_index = [met_name.index(i) if i in met_name else None for i in g.vs['name']]
-    idx = 0
-    e_p_values, e_scores, e_names = get_p(g, idx, permutation_time, met_index, adj_matrix, met_input, n_core=20)
-    # ###
-    # e_p_values = joblib.load('e_p_value.joblib')
-    # ###
-    plot_MetTD(e_p_values, e_scores, e_names, permutation_time)
