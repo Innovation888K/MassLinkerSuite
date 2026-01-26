@@ -117,8 +117,9 @@ def data_rev_transform(data):
     return data.reshape(1, 5194, 3, 20)[0]
 
 
-def gen_feature_names():
-    names = torch.load('names.pth')
+def gen_feature_names(names=None):
+    if names is None:
+        names = torch.load('names.pth')
     feature_names = list()
     for i in range(20):
         for j in names:
