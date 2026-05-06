@@ -35,3 +35,11 @@ Or if you are looking for prompt responses, you can feel free to add the work We
 <p align="center">
   <img src="./assets/wechat.jpg" align="center" width="300" />
 </p>
+
+## License
+
+This project is released for **academic and non-commercial use only**.
+
+Commercial use, including use in commercial products, paid services, internal business operations, consulting, or revenue-generating activities, is not permitted without prior written permission from the copyright holder.
+
+For commercial licensing inquiries, please contact: 2765332935@qq.com.
