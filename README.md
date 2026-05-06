@@ -30,6 +30,7 @@ MassLinker Suite provides step-by-step tutorials for database preparation, signa
 | [Generating MassLinker metabolic tokens](./Tutorials/generate_metabolic_tokens.md) | Convert raw or augmented LC–MS files into MassLinker metabolic tokens using pathway-guided m/z extraction and RBF fitting. |
 | [Building PyTorch datasets from MassLinker metabolic tokens](./Tutorials/build_python_dataset.md) | Build single-cohort datasets from MassLinker token files and integrate multi-cohort datasets with polarity-aware correction. |
 | [Utility functions for downstream analysis](./Tutorials/utils_overview.md) | Overview of utility functions for RBF reconstruction, token-distance analysis, enrichment analysis, visualization, and model-performance plotting. |
+| [Small-sample statistical comparison using MassLinker tokens](./Tutorials/small_sample_statistical_comparison.md) | Compare two groups from one MassLinker dataset object using RBF-based token distances, statistical testing, peak visualization, and KEGG enrichment analysis. |
 
 
 ## Need help?
