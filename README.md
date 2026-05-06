@@ -42,4 +42,4 @@ This project is released for **academic and non-commercial use only**.
 
 Commercial use, including use in commercial products, paid services, internal business operations, consulting, or revenue-generating activities, is not permitted without prior written permission from the copyright holder.
 
-For commercial licensing inquiries, please contact: 2765332935@qq.com.
+For commercial licensing inquiries, please contact: 2765332935@qq.com or tfxu@zju.edu.cn.
