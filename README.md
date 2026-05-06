@@ -27,8 +27,10 @@ MassLinker Suite provides step-by-step tutorials for database preparation, signa
 |---|---|
 | [KEGG pathway and metabolite database preparation](./Tutorials/prepare_metadata.md) | Prepare KEGG-based pathway, metabolite, exact mass, and reaction-link resources for downstream analysis. |
 | [LC–MS data augmentation](./Tutorials/data_augmentation.md) | Generate augmented LC–MS files by perturbing m/z values, peak intensities, and retention times. |
-| [Generating MassLinker metabolic tokens](./Tutorials/Encoding_ms1_data.md) | Convert raw or augmented LC–MS files into MassLinker metabolic tokens using pathway-guided m/z extraction and RBF fitting. |
-| [Building PyTorch datasets from MassLinker metabolic tokens](./Tutorials/build_dataset.md) | Build single-cohort datasets from MassLinker token files and integrate multi-cohort datasets with polarity-aware correction. |
+| [Generating MassLinker metabolic tokens](./Tutorials/generate_metabolic_tokens.md) | Convert raw or augmented LC–MS files into MassLinker metabolic tokens using pathway-guided m/z extraction and RBF fitting. |
+| [Building PyTorch datasets from MassLinker metabolic tokens](./Tutorials/build_python_dataset.md) | Build single-cohort datasets from MassLinker token files and integrate multi-cohort datasets with polarity-aware correction. |
+| [Utility functions for downstream analysis](./Tutorials/utils_overview.md) | Overview of utility functions for RBF reconstruction, token-distance analysis, enrichment analysis, visualization, and model-performance plotting. |
+
 
 ## Need help?
 If you have any quesitions about MassLinkerSuite, please don't hesitate to email Tengfei Xu tfxu@zju.edu.cn.
