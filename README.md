@@ -34,6 +34,16 @@ MassLinker Suite provides step-by-step tutorials for database preparation, signa
 | [Machine-learning utilities overview](./Tutorials/ML_tools_overview.md) | Overview of tools for conventional ML training, cross-validation summaries, ROC visualization, and SHAP-based feature interpretation. |
 | [Machine-learning validation examples](./Tutorials/ml_model_validation_examples.md) | Example workflows for fold-based ML validation, saved-model evaluation, external ROC comparison, and SHAP feature-importance analysis. |
 
+## Transformer Classifier
+
+In addition to the core tutorials, MassLinker Suite also provides advanced examples for optional modeling and benchmarking workflows.
+
+These examples are not required for the basic MassLinker pipeline, but they can be useful for users who want to explore alternative downstream modeling strategies.
+
+| Example | Description |
+|---|---|
+| [Transformer classifier training](./python/transformer.py) | Advanced example for training a Transformer-based classifier on MassLinker token tensors using augmented training samples, held-out test samples, and weighted focal loss. |
+
 
 ## Need help?
 If you have any quesitions about MassLinkerSuite, please don't hesitate to email Tengfei Xu tfxu@zju.edu.cn.
