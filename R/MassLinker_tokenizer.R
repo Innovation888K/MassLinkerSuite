@@ -1,13 +1,13 @@
 
-#work_dir="D:\\质谱不鉴定\\MTBLS1122\\0"
+
 args <- commandArgs(trailingOnly = TRUE)
 work_dir <- args[1] 
 outputs=args[2]
 pol=args[3]
 #pol_init=args[4]
-#file_name="D:\\质谱不鉴定\\QCP11.mzXML"
+#file_name="QCP11.mzXML"
 #print(pol)
-root="D:\\质谱不鉴定"
+root="D:\\"
 for (f in list.files(work_dir)) {
   file_name=paste0(work_dir,"\\",f)
   load(file=paste0(root,"\\compounds_detail_res.Rda"))
