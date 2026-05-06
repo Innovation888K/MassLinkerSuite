@@ -32,7 +32,7 @@ MassLinker Suite provides step-by-step tutorials for database preparation, signa
 
 | Tutorial | Description |
 |---|---|
-| [Pathway and metabolite database preparation](./Tutorials/prepare_metadata.md) | Prepare KEGG-based pathway, metabolite, exact mass, and reaction-link resources for downstream analysis. |
+| [Pathway and metabolite database preparation](./Tutorials/prepare_metadata.md) | Prepare pathway, metabolite, exact mass, and reaction-link resources for downstream analysis. Provided pre-calculated KEGG information |
 
 
 ## Need help?
