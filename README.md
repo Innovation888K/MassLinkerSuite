@@ -43,6 +43,7 @@ These examples are not required for the basic MassLinker pipeline, but they can 
 | Example | Description |
 |---|---|
 | [Transformer classifier training](./python/transformer.py) | Advanced example for training a Transformer-based classifier on MassLinker token tensors using augmented training samples, held-out test samples, and weighted focal loss. |
+| [Transformer SHAP analysis](./Examples/transformer_shap_analysis.md) | Advanced example for interpreting trained Transformer classifiers with SHAP and visualizing class-specific MassLinker token importance. |
 
 
 ## Need help?
