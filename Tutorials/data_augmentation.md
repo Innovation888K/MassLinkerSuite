@@ -115,7 +115,12 @@ rt_diff <- rnorm(enhance_num, mean = 0, sd = 10)
 This simulates chromatographic retention-time variation across LC–MS runs.
 
 
-
+## Notes
+The augmentation module is mainly intended for model training and robustness evaluation.
+For final biological interpretation, it is recommended to report results on the original non-augmented samples.
+The default augmentation settings are moderate and designed to mimic common LC–MS technical variation.
+Users may adjust the m/z, intensity, and retention-time perturbation parameters according to their instrument platform and experimental design.
+If downstream analysis is sensitive to exact retention time, please verify that the retention-time shift range is appropriate for the dataset.
 
 
 
