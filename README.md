@@ -1,8 +1,9 @@
 <h1 align="left">
   MassLinker
-  
 </h1>
-<img src="./assets/logo.png" align="right" width="400" />
+<p align="center">
+  <img src="./assets/logo.png"width="400" />
+</p>
 <br />
 <br />
 <br />
