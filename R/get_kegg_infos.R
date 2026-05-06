@@ -15,7 +15,7 @@ pathway_compound=list()
 for (i in 1:length(pathway_id$names.hsa_pathways)) {
   pathway_compound[[i]]=NA
 }
-kegg_result=lapply(1:361,function(i){
+kegg_result=lapply(1:nrow(pathway_id),function(i){
   print(i)
   x=pathway_id$names.hsa_pathways[i]
     tryCatch({
