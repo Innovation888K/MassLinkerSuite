@@ -84,8 +84,11 @@ augmented_data/
 ```
 The output files preserve the original file format and can be used as input for MassLinker token generation.
 
-## Augmentation strategy
 ---
+<h1 align="left">
+  Augmentation strategy
+</h1>
+
 ## m/z perturbation
 For each peak, a small random m/z shift is applied:
 ```r
@@ -93,15 +96,21 @@ mz_shift <- rnorm(nrow(x), mean = 0, sd = 5) *
   ifelse(x$mz < 400, 400, x$mz) / 1000000
 ```
 This simulates ppm-scale mass measurement error.
+
 # Intensity perturbation
 Peak intensities are randomly scaled:
 ```r
 int_shift <- rnorm(nrow(x), mean = 0, sd = 0.06)
 x$intensity <- x$intensity * (1 - int_shift)
 ```
+This simulates moderate experimental intensity variation.
 
-
-
+## Retention-time shift
+A small scan-level retention-time shift is applied:
+```r
+rt_diff <- rnorm(enhance_num, mean = 0, sd = 10)
+```
+This simulates chromatographic retention-time variation across LC–MS runs.
 
 
 
