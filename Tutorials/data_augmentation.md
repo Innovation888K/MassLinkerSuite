@@ -1,4 +1,6 @@
-# LC–MS data augmentation
+<h1 align="left">
+  LC–MS data augmentation
+</h1>
 
 This tutorial describes how to generate augmented LC–MS files for MassLinker Suite.
 
