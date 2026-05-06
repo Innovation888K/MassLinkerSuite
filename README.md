@@ -31,7 +31,7 @@ MassLinker Suite provides step-by-step tutorials for database preparation, signa
 | [Building PyTorch datasets from MassLinker metabolic tokens](./Tutorials/build_python_dataset.md) | Build single-cohort datasets from MassLinker token files and integrate multi-cohort datasets with polarity-aware correction. |
 | [Utility functions for downstream analysis](./Tutorials/utils_overview.md) | Overview of utility functions for RBF reconstruction, token-distance analysis, enrichment analysis, visualization, and model-performance plotting. |
 | [Small-sample statistical comparison using MassLinker tokens](./Tutorials/small_sample_comparison.md) | Compare two groups from one MassLinker dataset object using RBF-based token distances, statistical testing, peak visualization, and KEGG enrichment analysis. |
-| [Machine-learning utilities overview](./Tutorials/Ml_tools_overview.md) | Overview of tools for conventional ML training, cross-validation summaries, ROC visualization, and SHAP-based feature interpretation. |
+| [Machine-learning utilities overview](./Tutorials/ML_tools_overview.md) | Overview of tools for conventional ML training, cross-validation summaries, ROC visualization, and SHAP-based feature interpretation. |
 
 
 ## Need help?
