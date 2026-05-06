@@ -33,7 +33,7 @@ MassLinker Suite provides step-by-step tutorials for database preparation, signa
 | Tutorial | Description |
 |---|---|
 | [Pathway and metabolite database preparation](./Tutorials/prepare_metadata.md) | Prepare pathway, metabolite, exact mass, and reaction-link resources for downstream analysis. Provided pre-calculated KEGG information |
-
+- [Generating MassLinker metabolic tokens from raw LC–MS data](./Tutorials/generate_metabolic_tokens.md)
 
 ## Need help?
 If you have any quesitions about MassLinkerSuite, please don't hesitate to email me (tfxu@zju.edu.cn).
