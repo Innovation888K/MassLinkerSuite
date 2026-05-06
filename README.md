@@ -31,7 +31,7 @@ MassLinker Suite provides step-by-step tutorials for database preparation, signa
 | [Building PyTorch datasets from MassLinker metabolic tokens](./Tutorials/build_dataset.md) | Build single-cohort datasets from MassLinker token files and integrate multi-cohort datasets with polarity-aware correction. |
 
 ## Need help?
-If you have any quesitions about MassLinkerSuite, please don't hesitate to email tfxu@zju.edu.cn.
+If you have any quesitions about MassLinkerSuite, please don't hesitate to email Tengfei Xu tfxu@zju.edu.cn.
 Or if you are looking for prompt responses, you can feel free to add the work WeChat account of the first author Eason Wang (easonwang@zju.edu.cn).
 <p align="center">
   <img src="./assets/wechat.jpg" align="center" width="300" />
