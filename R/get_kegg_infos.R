@@ -3,8 +3,8 @@
 ######get KEGG pathways and corresponding metabolic
 library(KEGGREST)
 library(tcltk)
-file.name="D:\\git项目\\伪质谱图像\\demo_data\\QCP11"
-output.path="D:\\git项目\\伪质谱图像\\demo_data\\output"
+file.name="QCP11"
+output.path="output"
 ppm=15
 
 
@@ -29,18 +29,16 @@ kegg_result=lapply(1:361,function(i){
       print(i)
     })
   })
-for (i in 337:361) {
-  pathway_compound[[i]]=kegg_result[[i-336]]
-}
 
 
-save.image(file="D:\\git项目\\质谱不鉴定\\kegg_pathway_info.Rda")
+
+save.image(file="kegg_pathway_info.Rda")
 
 
 
 
 ######get KEGG compounds exact mass
-load("D:\\git项目\\质谱不鉴定\\kegg_pathway_info.Rda")
+load("kegg_pathway_info.Rda")
 index=1
 remind_pathway_index=c()
 for (i in pathway_compound) {
@@ -92,15 +90,15 @@ for (i in 1:nrow(compounds_detail_res)) {
                                         compounds_detail_res$exact_mass[i]+0.0004*ppm)
 }
 rownames(compounds_detail_res)=compounds_detail_res$id
-save.image(file="D:\\git项目\\质谱不鉴定\\kegg_pathway_info_detail.Rda")
-save(compounds_detail_res,file="D:\\git项目\\质谱不鉴定\\compounds_detail_res.Rda")
-save(kegg_pathways,file="D:\\git项目\\质谱不鉴定\\kegg_pathways.Rda")
-save(kegg_pathways_id,file="D:\\git项目\\质谱不鉴定\\kegg_pathways_id.Rda")
+save.image(file="kegg_pathway_info_detail.Rda")
+save(compounds_detail_res,file="compounds_detail_res.Rda")
+save(kegg_pathways,file="kegg_pathways.Rda")
+save(kegg_pathways_id,file="kegg_pathways_id.Rda")
 rm(list=ls())
 
-load(file="D:\\git项目\\质谱不鉴定\\compounds_detail_res.Rda")
-load(file="D:\\git项目\\质谱不鉴定\\kegg_pathways.Rda")
-load(file="D:\\git项目\\质谱不鉴定\\kegg_pathways_id.Rda")
+load(file="compounds_detail_res.Rda")
+load(file="kegg_pathways.Rda")
+load(file="kegg_pathways_id.Rda")
 
 reactions=keggList("Reaction")
 ping=function(x,t){
@@ -160,11 +158,11 @@ links=do.call(rbind,lapply(1:length(formulars),function(x){
   }
   return(ret)
 }))
-save(formulars,file="D:\\质谱不鉴定\\formulars.Rda")
-save(links,file="D:\\质谱不鉴定\\links.Rda")
-save(reactions,file="D:\\质谱不鉴定\\reactions.Rda")
+save(formulars,file="formulars.Rda")
+save(links,file="links.Rda")
+save(reactions,file="reactions.Rda")
 
-openxlsx::write.xlsx(links,"D:\\质谱不鉴定\\links.xlsx")
+openxlsx::write.xlsx(links,"links.xlsx")
 
 
 
