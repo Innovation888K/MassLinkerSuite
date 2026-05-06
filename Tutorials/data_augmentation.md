@@ -62,9 +62,55 @@ Rscript R/data_enhance.R ./raw_data ./augmented_data 5
 ```
 
 ## Arguments:
-
 |Argument|	Description|
+|---|---|
 |work_dir|	Directory containing raw LC–MS files|
 |output|	Directory for saving augmented LC–MS files|
 |enhance_num| Number of augmented files generated for each input file|
+
+## Output
+For each input file, the script generates multiple augmented files.
+
+Example:
+
+```text
+augmented_data/
+├── 1-sample_01.mzXML
+├── 2-sample_01.mzXML
+├── 3-sample_01.mzXML
+├── 1-sample_02.mzXML
+├── 2-sample_02.mzXML
+└── 3-sample_02.mzXML
+```
+The output files preserve the original file format and can be used as input for MassLinker token generation.
+
+## Augmentation strategy
+---
+## m/z perturbation
+For each peak, a small random m/z shift is applied:
+```r
+mz_shift <- rnorm(nrow(x), mean = 0, sd = 5) *
+  ifelse(x$mz < 400, 400, x$mz) / 1000000
+```
+This simulates ppm-scale mass measurement error.
+# Intensity perturbation
+Peak intensities are randomly scaled:
+```r
+int_shift <- rnorm(nrow(x), mean = 0, sd = 0.06)
+x$intensity <- x$intensity * (1 - int_shift)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
