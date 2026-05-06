@@ -83,10 +83,10 @@ compounds_detail_res$exact_mass=as.numeric(compounds_detail_res$exact_mass)
 compounds_detail_res$mz_min=0
 for (i in 1:nrow(compounds_detail_res)) {
   compounds_detail_res$mz_min[i]=ifelse(compounds_detail_res$exact_mass[i]>400,
-                                        compounds_detail_res$exact_mass[i]-ppm*compounds_detail_res$exact_mass[i]/100000,
+                                        compounds_detail_res$exact_mass[i]-ppm*compounds_detail_res$exact_mass[i]/1000000,
                                         compounds_detail_res$exact_mass[i]-0.0004*ppm)
   compounds_detail_res$mz_max[i]=ifelse(compounds_detail_res$exact_mass[i]>400,
-                                        compounds_detail_res$exact_mass[i]+ppm*compounds_detail_res$exact_mass[i]/100000,
+                                        compounds_detail_res$exact_mass[i]+ppm*compounds_detail_res$exact_mass[i]/1000000,
                                         compounds_detail_res$exact_mass[i]+0.0004*ppm)
 }
 rownames(compounds_detail_res)=compounds_detail_res$id
