@@ -10,4 +10,4 @@ for (i in 1:length(kegg_pathways)) {
                            mz=compounds_detail_res[t,2]))  
   }
 }
-write.csv(tp,file="D:\\质谱不鉴定\\pathway_compound_detail.csv")
+write.csv(tp,file="pathway_compound_detail.csv")
