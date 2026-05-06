@@ -26,8 +26,14 @@ MassLinker Suite integrates R and Python modules into a standardized workflow. T
 
 Overall, MassLinker Suite provides an end-to-end bridge between raw LC–MS measurements, interpretable metabolic tokens, and clinically relevant computational inference.
 
-## Usage
-You can find the simple tutorial on how to use MassLinker Suite in the Tutorials folder above.
+## Tutorials
+
+MassLinker Suite provides step-by-step tutorials for database preparation, signal encoding, model training, and downstream interpretation.
+
+| Tutorial | Description |
+|---|---|
+| [KEGG pathway and metabolite database preparation](./Tutorials/prepare_metadata) | Prepare KEGG-based pathway, metabolite, exact mass, and reaction-link resources for downstream analysis. |
+
 
 ## Need help?
 If you have any quesitions about MassLinkerSuite, please don't hesitate to email me (tfxu@zju.edu.cn).
