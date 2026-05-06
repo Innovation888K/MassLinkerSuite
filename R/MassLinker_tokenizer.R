@@ -7,7 +7,7 @@ pol=args[3]
 #pol_init=args[4]
 #file_name="QCP11.mzXML"
 #print(pol)
-root="D:\\"
+root=args[4]
 for (f in list.files(work_dir)) {
   file_name=paste0(work_dir,"\\",f)
   load(file=paste0(root,"\\compounds_detail_res.Rda"))
