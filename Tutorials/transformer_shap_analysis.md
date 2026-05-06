@@ -190,134 +190,230 @@ The example script below includes a helper function to convert common SHAP outpu
 
 ---
 
-## Example script
+## Complete example script
 
-For a reusable public example, avoid hard-coding the sequence length. Instead, infer it from the dataset.
+Save the following script as:
 
-A robust implementation should follow this pattern:
-
-```python
-def run_shap_analysis(
-    model_path,
-    data_path,
-    device,
-    n_background=50,
-    n_test=3,
-    embed_dim=512,
-    n_heads=8,
-    depth=8
-):
-    dataset = joblib.load(data_path)
-
-    x_raw = dataset.samples
-
-    if isinstance(x_raw, torch.Tensor):
-        x_tensor = x_raw.float()
-    else:
-        x_tensor = torch.tensor(
-            x_raw,
-            dtype=torch.float32
-        )
-
-    x_tensor = x_tensor.reshape(
-        x_tensor.shape[0],
-        x_tensor.shape[1],
-        60
-    )
-
-    seq_len = x_tensor.shape[1]
-
-    total_idx = np.arange(
-        len(x_tensor)
-    )
-
-    bg_idx = np.random.choice(
-        total_idx,
-        n_background,
-        replace=False
-    )
-
-    test_idx = np.random.choice(
-        total_idx,
-        n_test,
-        replace=False
-    )
-
-    background = x_tensor[
-        bg_idx
-    ].to(device)
-
-    test_samples = x_tensor[
-        test_idx
-    ]
-
-    if hasattr(dataset, "classes"):
-        num_classes = len(
-            set(dataset.classes)
-        )
-    else:
-        y = getattr(
-            dataset,
-            "is_positive",
-            None
-        )
-
-        if y is not None:
-            num_classes = len(
-                np.unique(y)
-            )
-        else:
-            num_classes = 2
-
-    model = transformer_language(
-        seq_len=seq_len,
-        class_count=num_classes,
-        embed_dim=embed_dim,
-        n_heads=n_heads,
-        depth=depth
-    )
-
-    checkpoint = torch.load(
-        model_path,
-        map_location=device
-    )
-
-    model.load_state_dict(
-        checkpoint
-    )
-
-    model.to(device)
-    model.eval()
-
-    explainer = shap.DeepExplainer(
-        model,
-        background
-    )
-
-    all_shap_values = []
-
-    for i in tqdm(
-        range(len(test_samples)),
-        desc=f"Calculating SHAP for {n_test} test samples"
-    ):
-        single_test_sample = test_samples[
-            i
-        ].unsqueeze(0).to(device)
-
-        shap_values_for_sample = explainer.shap_values(
-            single_test_sample
-        )
-
-        all_shap_values.append(
-            shap_values_for_sample
-        )
-
-    return all_shap_values, test_samples.cpu().numpy(), num_classes
+```text
+scripts/run_transformer_shap_analysis.py
 ```
 
-This avoids writing dataset-specific sequence lengths into the public code.
+```python
+import os
+import joblib
+import torch
+import numpy as np
+import pandas as pd
 
----
+from matplotlib.colors import LinearSegmentedColormap
+
+from transformer_shap import (
+    run_shap_analysis,
+    plot_top_n_feature_shap_2d,
+    plot_time_step_bar_chart,
+    plot_aggregated_time_importance
+)
+
+
+def prepare_shap_for_plotting(shap_values):
+    """
+    Convert SHAP output into the plotting format expected by transformer_shap.py.
+
+    The target format is:
+
+        (n_test * seq_len) x 60 x n_classes
+
+    Parameters
+    ----------
+    shap_values : list or np.ndarray
+        SHAP values returned by run_shap_analysis().
+
+    Returns
+    -------
+    shap_plot_values : np.ndarray
+        SHAP values reshaped for plotting.
+    """
+
+    if isinstance(shap_values, list):
+        # Common format:
+        # list[class_index] -> n_test x seq_len x 60
+        shap_array = np.stack(
+            shap_values,
+            axis=-1
+        )
+    else:
+        shap_array = shap_values
+
+    if shap_array.ndim == 4:
+        # n_test x seq_len x 60 x n_classes
+        n_test, seq_len, n_features, n_classes = shap_array.shape
+
+        shap_plot_values = shap_array.reshape(
+            n_test * seq_len,
+            n_features,
+            n_classes
+        )
+
+    elif shap_array.ndim == 3:
+        # Already in:
+        # (n_test * seq_len) x 60 x n_classes
+        shap_plot_values = shap_array
+
+    else:
+        raise ValueError(
+            "Unsupported SHAP value shape. Expected a 3D or 4D array, "
+            "or a list of class-specific arrays."
+        )
+
+    return shap_plot_values
+
+
+if __name__ == "__main__":
+
+    # ------------------------------------------------------------
+    # Define project paths
+    # ------------------------------------------------------------
+
+    model_path = "models/best_model.pth"
+    data_path = "data/dataset_for_shap.joblib"
+    annotation_path = "metadata/pathway_compound_detail.csv"
+
+    output_dir = "results/transformer_shap"
+
+    os.makedirs(
+        output_dir,
+        exist_ok=True
+    )
+
+    # ------------------------------------------------------------
+    # Define SHAP parameters
+    # ------------------------------------------------------------
+
+    device = torch.device(
+        "cuda" if torch.cuda.is_available() else "cpu"
+    )
+
+    n_background = 10
+    n_test = 20
+    top_n_time_steps = 15
+
+    # ------------------------------------------------------------
+    # Run SHAP analysis
+    # ------------------------------------------------------------
+
+    shap_values, test_data, num_classes = run_shap_analysis(
+        model_path=model_path,
+        data_path=data_path,
+        device=device,
+        n_background=n_background,
+        n_test=n_test
+    )
+
+    # Save raw SHAP results for reuse
+    shap_result_path = os.path.join(
+        output_dir,
+        "shap_values.joblib"
+    )
+
+    joblib.dump(
+        {
+            "shap_values": shap_values,
+            "test_data": test_data,
+            "num_classes": num_classes,
+            "n_background": n_background,
+            "n_test": n_test
+        },
+        filename=shap_result_path
+    )
+
+    # ------------------------------------------------------------
+    # Prepare SHAP values for plotting
+    # ------------------------------------------------------------
+
+    shap_plot_values = prepare_shap_for_plotting(
+        shap_values
+    )
+
+    # ------------------------------------------------------------
+    # Load feature names
+    # ------------------------------------------------------------
+
+    annotation_df = pd.read_csv(
+        annotation_path
+    )
+
+    feature_names = annotation_df[
+        "compound_names"
+    ].tolist()
+
+    # ------------------------------------------------------------
+    # Define a diverging color map
+    # ------------------------------------------------------------
+
+    custom_cmap = LinearSegmentedColormap.from_list(
+        "MassLinker_SHAP_Diverging",
+        [
+            "#3584FF",
+            "white",
+            "#FF5559"
+        ],
+        N=256
+    )
+
+    # ------------------------------------------------------------
+    # Plot class-specific SHAP heatmaps
+    # ------------------------------------------------------------
+
+    for class_idx in range(num_classes):
+        save_path = os.path.join(
+            output_dir,
+            f"shap_heatmap_class_{class_idx}.pdf"
+        )
+
+        plot_top_n_feature_shap_2d(
+            shap_plot_values,
+            n_test=n_test,
+            top_n_time_steps=top_n_time_steps,
+            target_class_index=class_idx,
+            feature_labels=feature_names,
+            save_path=save_path,
+            mode="trans",
+            cmap=custom_cmap
+        )
+
+    # ------------------------------------------------------------
+    # Plot top-token SHAP bar chart
+    # ------------------------------------------------------------
+
+    plot_time_step_bar_chart(
+        shap_plot_values,
+        n_test=n_test,
+        top_n_time_steps=50,
+        feature_labels=feature_names,
+        stacked=True,
+        colors=None,
+        save_path=os.path.join(
+            output_dir,
+            "shap_bar_top_tokens.pdf"
+        )
+    )
+
+    # ------------------------------------------------------------
+    # Plot aggregated SHAP importance
+    # ------------------------------------------------------------
+
+    plot_aggregated_time_importance(
+        shap_plot_values,
+        n_test=n_test,
+        top_n_time_steps=50,
+        feature_labels=feature_names,
+        colors=None,
+        save_path=os.path.join(
+            output_dir,
+            "shap_aggregated_top_tokens.pdf"
+        )
+    )
+```
 
 ## Running SHAP analysis
 
