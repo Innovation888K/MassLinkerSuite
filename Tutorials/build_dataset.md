@@ -1,3 +1,11 @@
+## A quick review
+| Scenario | Recommended function | Description |
+|---|---|---|
+| Single cohort | `ExcelDataset` | Build one dataset directly from one token directory |
+| Augmented single cohort | `ExcelDataset(mode="enhance")` | Build one dataset from augmented token folders |
+| Multiple cohorts | `concat_dataset` | Merge multiple saved `.joblib` datasets |
+| Multi-cohort RT correction | `concat_dataset` + `init_polarity.xlsx` | Reverse RBF centers for cohorts marked as `low` |
+
 ## Practical usage examples
 
 This section provides practical examples for constructing MassLinker datasets from tokenized LC–MS files.
