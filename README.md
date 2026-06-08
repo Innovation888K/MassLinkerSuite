@@ -59,4 +59,6 @@ This project is released for **academic and non-commercial use only**.
 
 Commercial use, including use in commercial products, paid services, internal business operations, consulting, or revenue-generating activities, is not permitted without prior written permission from the copyright holder.
 
+For details, please see the [LICENSE](./LICENSE) file.
+
 For commercial licensing inquiries, please contact: easonwang@qq.com or tfxu@zju.edu.cn.
