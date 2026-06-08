@@ -113,8 +113,8 @@ def data_transform(data):
     return data.reshape(data.shape[0], -1)
 
 
-def data_rev_transform(data):
-    return data.reshape(1, 5194, 3, 20)[0]
+def data_rev_transform(data, Metabo_count=5194):
+    return data.reshape(1, Metabo_count, 3, 20)[0]
 
 
 def gen_feature_names(names=None):
