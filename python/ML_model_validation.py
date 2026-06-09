@@ -1,3 +1,16 @@
+"""
+Machine-learning validation and SHAP analysis example for MassLinker.
+
+This script demonstrates how to evaluate conventional machine-learning models
+on MassLinker tokenized metabolomics datasets. It supports N-fold validation,
+fold-level result visualization, external ROC comparison, full-dataset model
+training, model serialization, and SHAP-based feature-importance analysis.
+
+The conventional models are managed through `ML_tools.ML_models`, which wraps
+SVM, XGBoost, random forest, and LightGBM classifiers. MassLinker token tensors
+are flattened into feature vectors before being passed to these models.
+"""
+
 import os
 import joblib
 import torch
@@ -39,17 +52,20 @@ def fold_n_valid(
         Training target mode. Use "single" for binary classification.
     """
 
+    # Load the serialized MassLinker dataset and generate random fold indices.
     loaded_data, split_idx = load_data(
         data_path,
         n_part=n_part
     )
 
     for fold in tqdm(range(n_part)):
+        # Build train/test indices for the current fold.
         test_idx, train_idx = ML_tools.fold_n(
             split_idx,
             fold
         )
 
+        # Initialize conventional machine-learning models for the current fold.
         models = ML_tools.ML_models(
             loaded_data[train_idx],
             loaded_data[train_idx],
@@ -64,6 +80,7 @@ def fold_n_valid(
         models.prediction()
         models.validation()
 
+        # Save fold-level predictions and true labels.
         ML_tools.save_model_results(
             models,
             fold,
@@ -103,10 +120,12 @@ def shap_ana(
         Trained or provided model wrapper.
     """
 
+    # Ensure that the SHAP output directory exists.
     os.makedirs(save_dir, exist_ok=True)
 
     ret = []
 
+    # Load all samples from the processed MassLinker dataset.
     loaded_data, split_idx = load_data(
         data_path,
         n_part=9
@@ -119,6 +138,7 @@ def shap_ana(
 
     all_data = loaded_data[all_indices]
 
+    # Train models on the full dataset if no pretrained model wrapper is provided.
     if models is None:
         models = ML_tools.ML_models(
             all_data,
@@ -131,10 +151,12 @@ def shap_ana(
             fit_mode=fit_mode
         )
 
+    # Flatten MassLinker token tensors for conventional machine-learning models.
     X_all = data_transform(
         all_data[0]
     ).numpy()
 
+    # Generate feature names corresponding to flattened MassLinker token features.
     feature_names = gen_feature_names()
 
     analyzers = [
@@ -167,6 +189,7 @@ def shap_ana(
         "LGB"
     ]
 
+    # Plot and collect SHAP feature-importance results for each model.
     for analyzer, model_name in zip(analyzers, model_names):
         analyzer.plot_importance(
             model_name,
@@ -182,7 +205,7 @@ def shap_ana(
 
 if __name__ == "__main__":
 
-    # Define project paths
+    # Define project paths.
     data_path = "data/processed_dataset.joblib"
 
     fold_result_dir = "results/fold_validation"
