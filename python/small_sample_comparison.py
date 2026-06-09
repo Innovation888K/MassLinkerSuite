@@ -1,3 +1,19 @@
+"""
+Small-sample differential analysis example for MassLinker.
+
+This script demonstrates a compact MassLinker downstream analysis workflow for
+small-sample metabolomics comparison. It loads a processed MassLinker dataset,
+extracts binary group labels and tokenized metabolic parameters, calculates
+Jensen-Shannon and Wasserstein distance profiles, performs statistical testing,
+generates differential feature plots, reconstructs top RBF-derived peak curves,
+runs KEGG enrichment analysis, and visualizes sample separation using selected
+distance features.
+
+The workflow is designed as a practical example script. Intermediate distance
+results are cached to avoid repeated computation, which can be time-consuming
+for large MassLinker token matrices.
+"""
+
 from utils import (
     metabo_dis,
     get_diff,
@@ -14,7 +30,9 @@ import numpy as np
 import pandas as pd
 
 
-# Define project directories
+# Define project directories.
+# These folders separate raw inputs, metadata, cached intermediate results,
+# and final analysis outputs.
 data_dir = "data"
 metadata_dir = "metadata"
 cache_dir = "cache"
@@ -29,7 +47,10 @@ os.makedirs(peak_plot_dir, exist_ok=True)
 os.makedirs(distance_plot_dir, exist_ok=True)
 
 
-# Define input and output files
+# Define input and output files.
+# `processed_dataset.joblib` should contain a serialized ExcelDataset-like
+# MassLinker dataset. The annotation table should include compound names,
+# m/z values, and KEGG pathway annotations.
 dataset_path = os.path.join(data_dir, "processed_dataset.joblib")
 annotation_path = os.path.join(metadata_dir, "pathway_compound_detail.csv")
 
@@ -62,6 +83,7 @@ group = [
 
 
 # Extract MassLinker token parameters.
+# Each element corresponds to one sample's RBF-derived metabolic token matrix.
 params = [
     dataset.samples[i]
     for i in sele_sample
@@ -80,11 +102,14 @@ else:
 
 
 # Convert distance results to arrays.
+# The first dimension corresponds to the reference or comparison container used
+# by `metabo_dis`.
 was_arr = np.array(was)[0]
 JS_arr = np.array(JS)[0]
 
 
 # Perform two-group statistical comparison.
+# Here, Wasserstein distance features are used for differential testing.
 p_values, was_diff = get_diff(
     was_arr,
     group
@@ -109,6 +134,8 @@ plot_p_value(
 
 
 # Plot reconstructed RBF curves for top differential peaks.
+# This visualizes group-level chromatographic signal differences for selected
+# MassLinker metabolic tokens.
 plot_peak_comp(
     p_values,
     group,
@@ -121,6 +148,7 @@ plot_peak_comp(
 
 
 # Perform KEGG enrichment analysis.
+# Differential feature statistics are mapped to KEGG pathway annotations.
 pathway_df_full = pd.read_csv(
     annotation_path,
     index_col=0
@@ -142,6 +170,8 @@ plot_enrichment(
 
 
 # Select significant distance features for 2D visualization.
+# Features passing the p-value threshold are used to summarize sample-level
+# distance patterns.
 was_selected = [
     []
     for i in range(len(was[0]))
@@ -160,6 +190,8 @@ for i in range(len(p_values)):
 
 
 # Visualize samples using significant JS and Wasserstein distance features.
+# The output can help assess group separation based on MassLinker-derived
+# distance representations.
 plot_2d(
     [JS_selected],
     [was_selected],
