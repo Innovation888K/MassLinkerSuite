@@ -99,4 +99,4 @@ Commercial use, including use in commercial products, paid services, internal bu
 
 For details, please see the [LICENSE](./LICENSE) file.
 
-For commercial licensing inquiries, please contact: easonwang@qq.com or tfxu@zju.edu.cn.
+For commercial licensing inquiries, please contact: easonwang@zju.edu.cn or tfxu@zju.edu.cn.
