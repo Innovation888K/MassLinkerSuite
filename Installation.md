@@ -22,3 +22,21 @@ Alternatively, the Python dependencies can be installed from requirements.txt:
 ```bash
 pip install -r requirements.txt
 ```
+3. Install R dependencies
+3. Install R dependencies
+MassLinker uses R for KEGG metadata retrieval, mzML data loading, MS1 signal extraction, and RBF-based MassLinker token encoding.
+The required R packages are:
+pracma
+mzR
+KEGGREST
+tcltk
+Install the required R packages with:
+```R
+install.packages("pracma")
+
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+
+BiocManager::install(c("mzR", "KEGGREST"))
+```
