@@ -19,6 +19,10 @@ MassLinker Suite integrates R and Python modules into a standardized workflow. T
 
 Overall, MassLinker Suite provides an end-to-end bridge between raw LC–MS measurements, interpretable metabolic tokens, and clinically relevant computational inference.
 
+## Installation
+MassLinker Suite contains both Python and R modules. We recommend using a clean conda environment for the Python components and a recent R installation for the R-based LC–MS preprocessing and MassLinker encoding steps.
+Quickly set up the dependent environment for MassLinker(./Installation.md)
+
 ## Tutorials
 
 MassLinker Suite provides step-by-step tutorials for database preparation, signal encoding, model training, and downstream interpretation.
