@@ -40,3 +40,16 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 
 BiocManager::install(c("mzR", "KEGGREST"))
 ```
+The tcltk package is usually included with standard R installations. To check whether it is available, run:
+```R
+capabilities("tcltk")
+library(tcltk)
+```
+4. Prepare mzML files
+Raw vendor LC–MS files should be converted to mzML format before MassLinker encoding. We recommend using ProteoWizard MSConvert.
+
+Example command:
+```bash
+msconvert input.raw --mzML --filter "msLevel 1" -o ./mzML/
+```
+The expected input for MassLinker encoding is a directory containing .mzML files.
