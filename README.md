@@ -21,7 +21,7 @@ Overall, MassLinker Suite provides an end-to-end bridge between raw LC–MS meas
 
 ## Installation
 MassLinker Suite contains both Python and R modules. We recommend using a clean conda environment for the Python components and a recent R installation for the R-based LC–MS preprocessing and MassLinker encoding steps.
-Quickly set up the dependent environment for MassLinker(./Installation.md)
+[Quickly set up the dependent environment for MassLinker](./Installation.md)
 
 ## Tutorials
 
