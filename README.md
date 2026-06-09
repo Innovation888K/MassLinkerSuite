@@ -23,6 +23,29 @@ Overall, MassLinker Suite provides an end-to-end bridge between raw LC–MS meas
 MassLinker Suite contains both Python and R modules. We recommend using a clean conda environment for the Python components and a recent R installation for the R-based LC–MS preprocessing and MassLinker encoding steps.
 [Quickly set up the dependent environment for MassLinker](./Installation.md)
 
+## Quick Start
+
+MassLinker Suite provides a minimal bash-based quick-start workflow that runs tokenization, dataset construction, and downstream differential analysis.
+
+Before running the quick-start script, please prepare:
+
+- mzML files in `./data/mzML`
+- sample label file at `./data/target.xlsx`
+- pathway annotation file at `./metadata/pathway_compound_detail.csv`
+
+The `target.xlsx` file should contain at least three columns:
+
+| filename | label | is_positive |
+|---|---|---|
+| sample_001 | control | 0 |
+| sample_002 | disease | 1 |
+
+Run the complete quick-start workflow:
+
+```bash
+bash quick_start.sh
+```
+
 ## Tutorials
 
 MassLinker Suite provides step-by-step tutorials for database preparation, signal encoding, model training, and downstream interpretation.
